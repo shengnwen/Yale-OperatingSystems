@@ -1,1 +1,45 @@
 List here the name of your partner, answers to the questions in the "Question" section of the lab, the brief description of what you have implemented, and anything else you would like us to know.
+
+1. Partner: ZhiPei Luo (Because we want to practice more so for Lab1  we implemented the code individually. However, the testcases are created together for cooperation)
+
+2. Question A:
+# A1.  At what points does the processor start executing 32-bit code? What exactly causes the switch from 16- to 32-bit mode?
+
+##A: When the boot loader(actually this is boot1 loaded by boot0) starts to function and switches the process from real mode to 32-bit protected mode. The instruction is listed below:(This set CR0 register = 1, the system is in protected mode)
+     "movl %eax, %cr0"
+
+# A2. What is the last instruction of the boot loader executed, and what is the first instruction of the kernel it just loaded?
+##A: Last instruction is in 'exec_kernel.S' where boot loader setting arguments and jump to kernel entry point.: In 'boot1main.c', it call exec_kernal function to jmp into kernel entry point, then in 'exec_kernel.s':
+     "jmp *%edx"     
+
+     First instruction: Using gdb to debug, I found the first instruction is to check wheter the bootloader magic number information:
+      (cli to clear global flags)
+      "cmp    $0x2badb002,%eax"
+
+# A3. Where is the first instruction of the kernel?
+##A:  It's in entry.s file, '.global start' below 'start' label.
+
+# A4. How does the boot loader decide how many sectors it must read in order to fetch the entire kernel from disk? Where does it find this information?
+##A: Boot loader fetch this information from ELF-format file. In load_kernel function from 'boot1main.c':
+      'readsection((uint32_t) ELFHDR, SECTOR_SIZE * 8, 0, dkernel);' (SECTOR_SIZE is defined in boot1lib.h = 512) 
+      This read section is recalled multiple times according to the size of Kernel by using this for loop:
+      ph = (proghdr *) ((uint8_t *) ELFHDR + ELFHDR->e_phoff);
+	eph = ph + ELFHDR->e_phnum;
+
+	for (; ph < eph; ph++)
+	{
+		readsection(ph->p_va, ph->p_memsz, ph->p_offset, dkernel);
+	}
+     All the above code are implemented in boot1main.c and the information boot loader seeks is in elf-format file:boot1.elf
+
+3. Brief Description of Implementation:
+#3.1
+#3.2
+#3.3
+
+4. TestCases:
+#4.1 
+#4.2
+#4.3
+
+5. Enrichment: 
