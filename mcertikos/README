@@ -33,13 +33,30 @@ List here the name of your partner, answers to the questions in the "Question" s
      All the above code are implemented in boot1main.c and the information boot loader seeks is in elf-format file:boot1.elf
 
 3. Brief Description of Implementation:
-#3.1
-#3.2
-#3.3
+#3.1 MATIntro layer:
+     I inplemted 4 functions with index range checking. As unsigned int (although dependent ont machine, mostly is 32 bits) covers a range from −2,147,483,648 to 2,147,483,647, the range of AT is [0, 1 << 20), so the input index may out of range. I also implemented the test case for this problem in test.c.
+
+#3.2 MATInit layer:
+     I inplemted 'pmem_init' function with O(n) time complexity. I wrote the 'find_first_row' function to track the first row number for each page and store the first_row of last page to avoid redundant search. 
+     Page number in [0,VM_USERLO_PI) and [VM_USERHI_PI, NPS) are reserved for kernel, so init with at_set_perm(i,1). Other pages if all coverd and usable  then set at_set_perm(i, 2);	otherwise the page is reserved by bios and at_set_perm(i, 0).
+     
+#3.3 MATOp layer:
+    I implemented both naive_palloc and memorization-version palloc using static variable to store last-allocate page.
 
 4. TestCases:
-#4.1 
-#4.2
-#4.3
+#4.1 MATIntro layer: Index Range Checking
 
-5. Enrichment: 
+5. Enrichment
+# 5.1: console.c export function 'cons_putc' by dprinf.c include console.h file. This function is called in dprintf.c's function 'cputs'
+
+# 5.2 Explain the following from video.c:
+##A: This code does: if cursor current position is bigger then content CRT_SIZE (which equals to (CRT_ROWS * CRT_COLS)), it will move the memory buffer for 1 line and do scolling in the video display. Finally, reduce the current position of 1 line length (CRT_COLS)
+
+# 5.3 Explore GCC's calling convention on the x86, and trace the execution of the following code step-by-step:
+  Output: x 1, y 3, z 4
+  
+# 5.4 Output: He110 World. It change 57616 to 16-based number which is 0xe110 and get the value from address of 0x00646c72 to fetch the content 'rld'.
+
+# 5.5 Output: x=3, y=9478072. Because we only give dprinf one value, so for the second value is not specified.
+
+# 5.6 I would reversed the arguments inside the dprintf.

@@ -15,7 +15,7 @@
  *    information available in the physical memory map table.
  *    Review import.h in the current directory for the list of avaiable getter and setter functions.
  */
-unsigned int findFirstRow(unsigned int start_row, unsigned int rows, unsigned int page_index);
+unsigned int find_first_row(unsigned int start_row, unsigned int rows, unsigned int page_index);
 void
 pmem_init(unsigned int mbi_addr)
 {
@@ -26,7 +26,7 @@ pmem_init(unsigned int mbi_addr)
   unsigned int rows;
   unsigned int h_addr;
   unsigned int i;
-  unsigned int first_row, tmp_row;
+  unsigned int first_row;
   //Calls the lower layer initializatin primitives.
   //The parameter mbi_addr shell not be used in the further code.
 	devinit(mbi_addr);
@@ -81,7 +81,7 @@ pmem_init(unsigned int mbi_addr)
     // this is reserved by kernel
        at_set_perm(i, 1);
     } else {
-       first_row = findFirstRow(first_row, rows, i);
+       first_row = find_first_row(first_row, rows, i);
         while (first_row < rows) {
           if (get_mms(first_row) + get_mml(first_row) >= (i + 1) * PAGESIZE - 1) {
             if (is_usable(first_row)) {
@@ -92,7 +92,7 @@ pmem_init(unsigned int mbi_addr)
             first_row ++;
             break;
           } else {
-            if (first_row + 1 < rows && get_mms(first_row + 1) == get_mms(first_row) + get_mml(tmp_row) + 1) {
+            if (first_row + 1 < rows && get_mms(first_row + 1) == get_mms(first_row) + get_mml(first_row) + 1) {
 
               first_row ++;
             } else {
@@ -106,7 +106,7 @@ pmem_init(unsigned int mbi_addr)
   } 
 }
 
-unsigned int findFirstRow(unsigned int start_row, unsigned int rows, unsigned int page_index) {
+unsigned int find_first_row(unsigned int start_row, unsigned int rows, unsigned int page_index) {
     int i;
     for(i = start_row; i < rows; i++) {
       if (get_mms(i) >= i * PAGESIZE && get_mms(i) + get_mml(i) >= i * PAGESIZE) {

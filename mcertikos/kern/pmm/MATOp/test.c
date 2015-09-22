@@ -47,6 +47,11 @@ int MATOp_test_own()
 {
   // TODO (optional)
   // dprintf("own test passed.\n");
+  //int x = 1, y = 3, z = 4;
+  //dprintf("B3:x %d, y %x, z %d\n", x, y, x);
+  //unsigned int i = 0x00646c72;
+  //dprintf("B4:H%x Wo%s\n", 57616, &i);
+  //dprintf("B5:x = %d, y=%d\n", 3);
   return 0;
 }
 

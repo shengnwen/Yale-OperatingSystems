@@ -43,6 +43,8 @@ int MATInit_test_own()
 {
   // TODO (optional)
   // dprintf("own test passed.\n");
+  int i;
+  int nps = get_nps();
   return 0;
 }
 

@@ -101,7 +101,18 @@ int MATIntro_test_own()
    return 0;
 }
 
+void test_gcc();
 int test_MATIntro()
 {
+  //test_gcc();
   return MATIntro_test1() + MATIntro_test2() + MATIntro_test3() + MATIntro_test_own();
+}
+
+void test_gcc() 
+{
+    int x = 1, y = 3, z = 4;
+    dprintf("QuestionB-3:x %d, y %x, z %d\n", x, y, z);
+    unsigned int i = 0x00646c72;
+    dprintf("QuestionB-4:H%x Wo%s\n", 57616, &i);
+    dprintf("QuestionB-5:x=%d, y=%d\n", 3);
 }

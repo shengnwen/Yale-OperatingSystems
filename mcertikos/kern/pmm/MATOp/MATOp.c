@@ -47,7 +47,7 @@ palloc()
     }
   }     
   //return 0;
-  return naive_palloc();
+  //return naive_palloc();
 } 
 
 /**
