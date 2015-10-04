@@ -15,11 +15,11 @@ unsigned int get_ptbl_entry_by_va(unsigned int proc_index, unsigned int vaddr)
         return 0;
     }
     unsigned int pde_index = vaddr >> 22;
-    unsigned int pte_index = (vaddr>>12) & (0b1111111111);
+    unsigned int pte_index = (vaddr>>12) & (0x003FF);
     if (get_pdir_entry(proc_index, pde_index) == 0) 
     {
         return 0;
-    } 
+    }
     return get_ptbl_entry(proc_index, pde_index, pte_index);
 }         
 
@@ -36,7 +36,7 @@ void rmv_ptbl_entry_by_va(unsigned int proc_index, unsigned int vaddr)
 {
     // TODO
     unsigned int pde_index = vaddr >> 22;
-    unsigned int pte_index = (vaddr>>12) & (0b1111111111); 
+    unsigned int pte_index = (vaddr>>12) & (0x003FF); 
     rmv_ptbl_entry(proc_index, pde_index, pte_index);
 }
 
@@ -54,7 +54,7 @@ void set_ptbl_entry_by_va(unsigned int proc_index, unsigned int vaddr, unsigned 
 {
     // TODO
     unsigned int pde_index = vaddr >> 22;
-    unsigned int pte_index = (vaddr>>12) & (0b1111111111); 
+    unsigned int pte_index = (vaddr>>12) & (0x003FF); 
     set_ptbl_entry(proc_index, pde_index, pte_index, page_index, perm);
 }
 
@@ -71,25 +71,22 @@ void set_pdir_entry_by_va(unsigned int proc_index, unsigned int vaddr, unsigned 
 // while the permission for the rest should be PTE_P and PTE_W.
 void idptbl_init(unsigned int mbi_adr)
 {
-    // TODO: define your local variables here.
-    //
-    container_init(mbi_adr);
-    // TODO
     int pde_index, ptb_index;
+    container_init(mbi_adr);
     for (pde_index = 0; pde_index < 1024; pde_index ++)
     {
         for (ptb_index = 0; ptb_index < 1024; ptb_index++) 
         {
-            unsigned int ph_address = pde_index << 22 + ptb_index << 12;
+            unsigned int ph_address = pde_index << 22 | ptb_index << 12;
             if (ph_address < 0x40000000 || ph_address >= 0xF0000000) 
             {
                 // reserved by kernel
-                * (unsigned int *)ph_address = ph_address | 0b111;
+                set_ptbl_entry_identity(pde_index, ptb_index, PTE_P|PTE_W|PTE_G);
             }
             else
             {
-                * (unsigned int *)ph_address = ph_address | 0b11;
-            }
+        		set_ptbl_entry_identity(pde_index, ptb_index, PTE_P|PTE_W);    
+			}
         }
     } 
 }

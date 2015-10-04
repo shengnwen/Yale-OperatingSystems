@@ -31,7 +31,6 @@ void set_pdir_base(unsigned int index)
     if (index >= NUM_IDS)
     {
 	// process id exceed the boundary
-	dprintf("Process ID:%u is out of boundary", index);
 	return;
     }
     set_cr3(PDirPool[index]);
@@ -49,7 +48,6 @@ unsigned int get_pdir_entry(unsigned int proc_index, unsigned int pde_index)
 // you should also set the permissions PTE_P, PTE_W, and PTE_U
 void set_pdir_entry(unsigned int proc_index, unsigned int pde_index, unsigned int page_index)
 {
-    // TODO
     if (proc_index >= NUM_IDS || pde_index >= 1024) 
     {
 	return;
@@ -63,8 +61,7 @@ void set_pdir_entry(unsigned int proc_index, unsigned int pde_index, unsigned in
 // this will be used to map the page directory entry to identity page table.
 void set_pdir_entry_identity(unsigned int proc_index, unsigned int pde_index)
 {   
-    // TODO
-    PDirPool[proc_index][pde_index] = (char*)((unsigned int)IDPTbl[pde_index] |  PT_PERM_PTU);
+    PDirPool[proc_index][pde_index] = (char*)((unsigned int)IDPTbl[pde_index] | PT_PERM_PTU);
 
 }   
 
@@ -72,7 +69,6 @@ void set_pdir_entry_identity(unsigned int proc_index, unsigned int pde_index)
 // don't forget to cast the value to (char *).
 void rmv_pdir_entry(unsigned int proc_index, unsigned int pde_index)
 {
-    // TODO
     PDirPool[proc_index][pde_index] = (char*)0;
 }   
 
@@ -80,8 +76,13 @@ void rmv_pdir_entry(unsigned int proc_index, unsigned int pde_index)
 // do not forget that the permission info is also stored in the page directory entries.
 unsigned int get_ptbl_entry(unsigned int proc_index, unsigned int pde_index, unsigned int pte_index)
 {   
-    unsigned int  ptl_address = (unsigned int)PDirPool[proc_index][pde_index] & ~ 0xF;
-    return ((unsigned int *)ptl_address)[pte_index];
+    unsigned int  ptl_address = (unsigned int)get_pdir_entry(proc_index, pde_index) & ~0xFFF;
+    if(ptl_address){
+        return ((unsigned int *)ptl_address)[pte_index];
+    }
+	else {
+		return 0;
+	}
 }
 
 // sets specified page table entry with the start address of physical page # [page_index]
@@ -89,7 +90,7 @@ unsigned int get_ptbl_entry(unsigned int proc_index, unsigned int pde_index, uns
 void set_ptbl_entry(unsigned int proc_index, unsigned int pde_index, unsigned int pte_index, unsigned int page_index, unsigned int perm)
 {   
     unsigned int pt_address = (unsigned int)(PDirPool[proc_index][pde_index]);
-    pt_address = pt_address & ~0xF;
+    pt_address = pt_address & ~0xFFF;
     ((unsigned int *)pt_address)[pte_index] = (unsigned int)(page_index * PAGESIZE + perm);
 }   
 
@@ -98,13 +99,13 @@ void set_ptbl_entry(unsigned int proc_index, unsigned int pde_index, unsigned in
 void set_ptbl_entry_identity(unsigned int pde_index, unsigned int pte_index, unsigned int perm)
 {
     // TODO
-    IDPTbl[pde_index][pte_index] |= perm;
+    IDPTbl[pde_index][pte_index] = pde_index << 22 | pte_index << 12 | perm;
 }
 
 // sets the specified page table entry to 0
 void rmv_ptbl_entry(unsigned int proc_index, unsigned int pde_index, unsigned int pte_index)
 {
     // TODO
-   unsigned int  pt_address =  (unsigned int)PDirPool[proc_index][pde_index] & ~0xF;
+   unsigned int  pt_address =  (unsigned int)PDirPool[proc_index][pde_index] & ~0xFFF;
    ((char**)pt_address)[pte_index] = 0;
 }

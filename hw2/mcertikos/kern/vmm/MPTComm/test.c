@@ -9,7 +9,7 @@ int MPTComm_test1()
   for (i = 0; i < 1024; i ++) {
     if (i < 256 || i >= 960) {
       if (get_ptbl_entry_by_va(10, i * 4096 * 1024) != i * 4096 * 1024 + 259) {
-        dprintf("test 1 failed.\n");
+	dprintf("test 1 failed: u:%u, i:%d\n", get_ptbl_entry_by_va(10, i * 4096 * 1024), i);
         return 1;
       }
     }
@@ -24,16 +24,16 @@ int MPTComm_test2()
   container_split(0, 100);
   alloc_ptbl(1, vaddr);
   if (get_pdir_entry_by_va(1, vaddr) == 0) {
-    dprintf("test 2 failed.\n");
+    dprintf("test 2.1 failed.\n");
     return 1;
   }
   if(get_ptbl_entry_by_va(1, vaddr) != 0) {
-    dprintf("test 2 failed.\n");
+    dprintf("test 2.2 failed.\n");
     return 1;
   }
   free_ptbl(1, vaddr);
   if (get_pdir_entry_by_va(1, vaddr) != 0) {
-    dprintf("test 2 failed.\n");
+    dprintf("test 2.3 failed.\n");
     return 1;
   }
   dprintf("test 2 passed.\n");

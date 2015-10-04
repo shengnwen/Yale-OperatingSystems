@@ -20,7 +20,6 @@ static struct SContainer CONTAINER[NUM_IDS];
 void container_init(unsigned int mbi_addr)
 {
   unsigned int real_quota;
-  // TODO: define your local variables here.
   int max_nps;
   int i;
   pmem_init(mbi_addr);
@@ -64,7 +63,11 @@ unsigned int container_get_parent(unsigned int id)
 unsigned int container_get_nchildren(unsigned int id)
 {
   // TODO
-  return CONTAINER[id].nchildren;
+  if (id < NUM_IDS && id >= 0) 
+  {
+      return CONTAINER[id].nchildren;
+  }
+  return 0;
 }
 
 
@@ -108,8 +111,11 @@ unsigned int container_split(unsigned int id, unsigned int quota)
   /**
    * TODO: update the container structure of both parent and child process appropriately.
    */
+  while(CONTAINER[child].used)
+  {
+    child++;
+  }
   // modify parent(id) info
-  CONTAINER[id].quota -= quota;
   CONTAINER[id].usage += quota;
   CONTAINER[id].nchildren += 1;
   // modify child info
@@ -136,8 +142,9 @@ unsigned int container_alloc(unsigned int id)
   if (page_id == 0) {
     return 0;
   }
-  CONTAINER[id].quota -= 1;
   CONTAINER[id].usage += 1;
+  CONTAINER[id].used = 1;
+  return page_id;
 }
 
 // frees the physical page and reduces the usage by 1.
@@ -145,6 +152,5 @@ void container_free(unsigned int id, unsigned int page_index)
 {
   // TODO
   pfree(page_index);
-  CONTAINER[id].quota += 1;
   CONTAINER[id].usage -= 1;
 }
