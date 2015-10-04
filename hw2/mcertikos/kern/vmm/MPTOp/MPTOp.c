@@ -75,6 +75,21 @@ void idptbl_init(unsigned int mbi_adr)
     //
     container_init(mbi_adr);
     // TODO
-    int proc_index = 0;
-    
+    int pde_index, ptb_index;
+    for (pde_index = 0; pde_index < 1024; pde_index ++)
+    {
+        for (ptb_index = 0; ptb_index < 1024; ptb_index++) 
+        {
+            unsigned int ph_address = pde_index << 22 + ptb_index << 12;
+            if (ph_address < 0x40000000 || ph_address >= 0xF0000000) 
+            {
+                // reserved by kernel
+                * (unsigned int *)ph_address = ph_address | 0b111;
+            }
+            else
+            {
+                * (unsigned int *)ph_address = ph_address | 0b11;
+            }
+        }
+    } 
 }
