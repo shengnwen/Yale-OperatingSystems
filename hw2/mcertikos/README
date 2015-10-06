@@ -9,11 +9,11 @@ Lab2=======
 2. Assignment Completion: we wrote the code seperately after we discussed the functions and  concepts.
 3. Brief Discription:
 # MContainer layer: I tried to check function input process_id in constraints between 0 and NUM_IDS or it will return 0;
-# MPTIntro Layer:
-# MPTOp Layer:
-# MPTComm Layer:
-# MPTKern Layer:
-# MPTNew Layer:
+# MPTIntro Layer: Use get_pdir_entry to test in each remove and set function. if the pdir_entry don't exist, the function will just return without any more action.
+# MPTOp Layer: Use the kernal lo and hi bound information from lab1 to initiate the identitty page table.
+# *MPTComm Layer: Implementing this layer corrected my fault in previous layer, especailly for misusing pointers in c.
+# *MPTKern Layer: Using Piazza help to remodify map_page: When the directory is setup, just map and return 0; 
+# MPTNew Layer: Implement page allocation.
 
 
 Lab1=======

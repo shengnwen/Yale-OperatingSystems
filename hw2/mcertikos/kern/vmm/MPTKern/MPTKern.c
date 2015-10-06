@@ -43,11 +43,10 @@ unsigned int map_page(unsigned int proc_index, unsigned int vadr, unsigned int p
   else 
   {
       // page set up already
-      // check page table set up or not;
+      
       set_ptbl_entry_by_va(proc_index, vadr, page_index, perm);
-      return pdir_entry;
+      return 0;
   } 
-  return 0;
 }
 
 /**

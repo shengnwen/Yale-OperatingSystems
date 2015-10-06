@@ -60,7 +60,8 @@ void set_pdir_entry(unsigned int proc_index, unsigned int pde_index, unsigned in
 // you should also set the permissions PTE_P, PTE_W, and PTE_U
 // this will be used to map the page directory entry to identity page table.
 void set_pdir_entry_identity(unsigned int proc_index, unsigned int pde_index)
-{   
+{  
+     
     PDirPool[proc_index][pde_index] = (char*)((unsigned int)IDPTbl[pde_index] | PT_PERM_PTU);
 
 }   
@@ -91,6 +92,10 @@ void set_ptbl_entry(unsigned int proc_index, unsigned int pde_index, unsigned in
 {   
     unsigned int pt_address = (unsigned int)(PDirPool[proc_index][pde_index]);
     pt_address = pt_address & ~0xFFF;
+    if (pt_address == 0) 
+    {
+        return;
+    }
     ((unsigned int *)pt_address)[pte_index] = (unsigned int)(page_index * PAGESIZE + perm);
 }   
 
@@ -107,5 +112,9 @@ void rmv_ptbl_entry(unsigned int proc_index, unsigned int pde_index, unsigned in
 {
     // TODO
    unsigned int  pt_address =  (unsigned int)PDirPool[proc_index][pde_index] & ~0xFFF;
+   if (pt_address == 0) 
+   {
+ 	return;
+   }
    ((char**)pt_address)[pte_index] = 0;
 }
