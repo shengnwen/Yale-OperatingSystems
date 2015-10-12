@@ -6,12 +6,12 @@
  * the current thread's states and restore the new thread's states.
  */
 struct kctx {
-	void	*esp;
-	unsigned int edi;
-	unsigned int esi;
-	unsigned int ebx;
-	unsigned int ebp;
-	void	*eip;
+	void	*esp; // top address of stack
+	unsigned int edi; // destination index
+	unsigned int esi;// source index pointer
+	unsigned int ebx; // general registers, base registers
+	unsigned int ebp;// stack base address
+	void	*eip; // ofset of next instruction
 };
 
 //places to save the [NUM_IDS] kernel thread states.
