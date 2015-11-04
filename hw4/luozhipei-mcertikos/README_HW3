@@ -1,0 +1,3 @@
+Team: Sheng Wen, Zhipei Luo
+
+What we have accomplished: We have implemented the spawning processes and the yielding of processes, based on the switching between processes. We interacted with assembly code, and learnt a new way to pass around arguments. Besides, we gained experience on dealing with thread queues and tons of experience with gdb debugging. Finally, the startuser command can run successfully which means that our kernel can now handle the switching between multiple processes.
